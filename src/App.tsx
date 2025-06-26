@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Step1Form from "./components/step1Form";
 import Step2Feedback from "./components/step2Feedback";
+import { generateFeedback } from "./utils/generateFeedback";
+import { AnimatePresence, motion } from "framer-motion";
 
 type Persona = "enthusiastic" | "skeptical" | "professional";
 
@@ -10,24 +12,14 @@ function App() {
   const [feedback, setFeedback] = useState("");
   const [persona, setPersona] = useState<Persona>("enthusiastic");
 
-  const generateFeedback = (data: any, persona: Persona) => {
-    const { productName, problem } = data;
-
-    switch (persona) {
-      case "enthusiastic":
-        return `OMG! ${productName} is exactly what I needed! Solving "${problem}"? Genius! 😍`;
-      case "skeptical":
-        return `Hmm, I'm not convinced ${productName} really addresses "${problem}". What makes it different?`;
-      case "professional":
-        return `From a practical standpoint, ${productName} targets "${problem}", which is a real issue. The approach is interesting and worth exploring further.`;
-      default:
-        return `Thanks for sharing ${productName}.`;
-    }
-  };
+  const personas: Persona[] = ["enthusiastic", "skeptical", "professional"];
 
   const handleFormSubmit = (data: any) => {
+    // Pick a random persona
+    const randomPersona = personas[Math.floor(Math.random() * personas.length)];
+    setPersona(randomPersona);
     setFormData(data);
-    const generated = generateFeedback(data, persona);
+    const generated = generateFeedback(data, randomPersona);
     setFeedback(generated);
     setStep(2);
   };
@@ -35,17 +27,35 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center px-4 py-10">
       <div className="w-full max-w-2xl">
-        {step === 1 && (
-          <Step1Form onSubmit={handleFormSubmit} />
-        )}
-        {step === 2 && (
-          <Step2Feedback
-            data={formData}
-            persona={persona}
-            feedback={feedback}
-            onBack={() => setStep(1)}
-          />
-        )}
+        <AnimatePresence mode="wait">
+          {step === 1 && (
+            <motion.div
+              key="step1"
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 40 }}
+              transition={{ duration: 0.4 }}
+            >
+              <Step1Form onSubmit={handleFormSubmit} />
+            </motion.div>
+          )}
+          {step === 2 && (
+            <motion.div
+              key="step2"
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ duration: 0.4 }}
+            >
+              <Step2Feedback
+                data={formData}
+                persona={persona}
+                feedback={feedback}
+                onBack={() => setStep(1)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
