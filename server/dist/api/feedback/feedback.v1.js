@@ -21,9 +21,7 @@ router.post("/feedback", async (req, res) => {
             return res.status(400).json({ error: "Missing fields" });
         }
         const persona = (0, pickPersona_1.pickRandomPersona)();
-        debug("Picked persona: %s", persona);
         const aiPrompt = (0, openAi_1.buildPrompt)(productName, problem, audience, persona);
-        debug("Built AI prompt: %s", aiPrompt);
         const completion = await openAi_1.openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: aiPrompt }],
