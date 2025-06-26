@@ -1,11 +1,14 @@
 import express from "express";
 import feedbackRouter from "./api/feedback/feedback.v1";
 import dotenv from "dotenv";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+
+app.use(cors());
 
 // Middleware
 app.use(express.json());

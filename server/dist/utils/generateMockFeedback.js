@@ -1,5 +1,7 @@
-
-export const generateMockFeedback = (name: string, problem: string, persona: string) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.generateMockFeedback = void 0;
+const generateMockFeedback = (name, problem, persona) => {
     switch (persona) {
         case "skeptical":
             return `Not sure ${name} really solves "${problem}" effectively. Sounds ambitious.`;
@@ -9,4 +11,5 @@ export const generateMockFeedback = (name: string, problem: string, persona: str
         default:
             return `Wow! ${name} is perfect for solving "${problem}". I'm excited!`;
     }
-}
+};
+exports.generateMockFeedback = generateMockFeedback;

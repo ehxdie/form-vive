@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Step1Form from "./components/step1Form";
 import Step2Feedback from "./components/step2Feedback";
-import { generateFeedback } from "./utils/generateFeedback";
+import { generateFeedback, FeedbackRequest, FeedbackResponse } from "./api/generateFeedback";
 import { AnimatePresence, motion } from "framer-motion";
 
 type Persona = "enthusiastic" | "skeptical" | "professional";
@@ -11,17 +11,23 @@ function App() {
   const [formData, setFormData] = useState<any>(null);
   const [feedback, setFeedback] = useState("");
   const [persona, setPersona] = useState<Persona>("enthusiastic");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const personas: Persona[] = ["enthusiastic", "skeptical", "professional"];
-
-  const handleFormSubmit = (data: any) => {
-    // Pick a random persona
-    const randomPersona = personas[Math.floor(Math.random() * personas.length)];
-    setPersona(randomPersona);
-    setFormData(data);
-    const generated = generateFeedback(data, randomPersona);
-    setFeedback(generated);
-    setStep(2);
+  const handleFormSubmit = async (data: FeedbackRequest) => {
+    setLoading(true);
+    setError(null);
+    try {
+      setFormData(data);
+      const result: FeedbackResponse = await generateFeedback(data);
+      setFeedback(result.response);
+      setPersona(result.persona);
+      setStep(2);
+    } catch (err) {
+      setError("Failed to generate feedback. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -36,7 +42,8 @@ function App() {
               exit={{ opacity: 0, x: 40 }}
               transition={{ duration: 0.4 }}
             >
-              <Step1Form onSubmit={handleFormSubmit} />
+              <Step1Form onSubmit={handleFormSubmit} loading={loading} />
+              {error && <div className="text-red-500 mt-2">{error}</div>}
             </motion.div>
           )}
           {step === 2 && (

@@ -1,7 +1,7 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import { generateMockFeedback } from "../../utils/generateMockFeedback";
 import { pickRandomPersona } from "../../utils/pickPersona";
+import { buildPrompt,openai } from "../../integrations/openAi";
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -18,8 +18,15 @@ router.post("/feedback", async (req: any, res: any) => {
         // Choose a persona randomly
         const persona = pickRandomPersona();
 
-        // Generate mock feedback
-        const feedback = generateMockFeedback(productName, problem, persona);
+        const aiPrompt = buildPrompt(productName, problem, audience, persona);
+
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo", // or "gpt-4" if enabled
+            messages: [{ role: "user", content: aiPrompt }],
+            temperature: 0.8,
+        });
+
+        const response = completion.choices[0].message?.content || "No response generated.";
 
         // Save to DB
         const entry = await prisma.feedback.create({
@@ -27,7 +34,7 @@ router.post("/feedback", async (req: any, res: any) => {
                 productName,
                 problem,
                 audience,
-                response: feedback,
+                response: response,
                 persona,
             },
         });
