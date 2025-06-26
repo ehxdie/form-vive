@@ -26,7 +26,6 @@ router.post("/feedback", async (req: any, res: any) => {
         const aiPrompt = buildPrompt(productName, problem, audience, persona);
         debug("Built AI prompt: %s", aiPrompt);
 
-
         const completion = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: aiPrompt }],
