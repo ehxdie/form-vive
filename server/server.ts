@@ -1,5 +1,4 @@
 import express from "express";
-import inputRouter from "./api/input/input.v1";
 import feedbackRouter from "./api/feedback/feedback.v1";
 import dotenv from "dotenv";
 
@@ -12,7 +11,6 @@ const PORT = process.env.PORT || 4000;
 app.use(express.json());
 
 // Routes
-app.use("/api", inputRouter);
 app.use("/api", feedbackRouter);
 
 // Health check
