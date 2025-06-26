@@ -11,6 +11,7 @@ const prisma = new PrismaClient();
 
 router.post("/feedback", async (req: any, res: any) => {
     try {
+        
         const { productName, problem, audience } = req.body;
         debug("Received POST /feedback with body: %O", req.body);
 
@@ -25,6 +26,7 @@ router.post("/feedback", async (req: any, res: any) => {
         const aiPrompt = buildPrompt(productName, problem, audience, persona);
         debug("Built AI prompt: %s", aiPrompt);
 
+
         const completion = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: aiPrompt }],
@@ -34,6 +36,7 @@ router.post("/feedback", async (req: any, res: any) => {
         const response = completion.choices[0].message?.content || "No response generated.";
         debug("AI response: %s", response);
 
+        
         const entry = await prisma.feedback.create({
             data: {
                 productName,
@@ -47,9 +50,10 @@ router.post("/feedback", async (req: any, res: any) => {
         debug("Saved feedback entry: %O", entry);
 
         res.status(201).json({ response: entry.response, persona: entry.persona });
+
     } catch (error) {
         debug("Error in POST /feedback: %O", error);
-        res.status(500).json({ error: "Server error" });
+        res.status(500).json({ error: "Server error.." });
     }
 });
 

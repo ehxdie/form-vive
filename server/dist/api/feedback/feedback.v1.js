@@ -45,7 +45,7 @@ router.post("/feedback", async (req, res) => {
     }
     catch (error) {
         debug("Error in POST /feedback: %O", error);
-        res.status(500).json({ error: "Server error" });
+        res.status(500).json({ error: "Server error.." });
     }
 });
 exports.default = router;

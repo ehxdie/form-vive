@@ -12,7 +12,7 @@ dotenv_1.default.config();
 const debug = (0, debug_1.default)("form-vive:server");
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 4000;
-app.use((0, cors_1.default)({ origin: "http://localhost:3000" }));
+app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 // Routes
 app.use("/api", feedback_v1_1.default);
