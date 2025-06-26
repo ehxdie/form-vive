@@ -23,6 +23,16 @@ const Step1Form = ({ onSubmit, loading }: Step1FormProps) => {
 
     return (
         <div className="max-w-xl mx-auto mt-16 p-6 bg-white rounded-2xl shadow-xl">
+            {/* Loom Video Embed */}
+            <div className="mb-6 aspect-w-16 aspect-h-9">
+                <iframe
+                    src="https://www.loom.com/embed/9a32184bc82040a49bc29e3bfa15e66a?sid=715de6d9-7b06-474c-89ac-3103c1868160"
+                    frameBorder="0"
+                    allowFullScreen
+                    className="w-full h-64 rounded-lg"
+                    title="Loom walkthrough"
+                ></iframe>
+            </div>
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Product Feedback Form</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Product Name */}
